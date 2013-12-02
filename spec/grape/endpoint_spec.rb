@@ -102,8 +102,8 @@ describe Grape::Endpoint do
       get('/test', {}, 'HTTP_COOKIE' => 'delete_this_cookie=1; and_this=2')
       last_response.body.should == '3'
       last_response.headers['Set-Cookie'].split("\n").sort.should == [
-          "and_this=deleted; expires=Thu, 01-Jan-1970 00:00:00 GMT",
-          "delete_this_cookie=deleted; expires=Thu, 01-Jan-1970 00:00:00 GMT"
+          "and_this=deleted; expires=Thu, 01 Jan 1970 00:00:00 -0000",
+          "delete_this_cookie=deleted; expires=Thu, 01 Jan 1970 00:00:00 -0000"
       ]
     end
   end
