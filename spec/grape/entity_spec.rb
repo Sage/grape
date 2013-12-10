@@ -304,6 +304,32 @@ describe Grape::Entity do
         rep.last.serializable_hash[:name].should == 'Friend 2'
       end
 
+      it 'passes through custom options' do
+        module EntitySpec
+          class FriendEntity < Grape::Entity
+            root 'friends', 'friend'
+            expose :name
+            expose :email, if: { user_type: :admin }
+          end
+        end
+
+        fresh_class.class_eval do
+          expose :friends, using: EntitySpec::FriendEntity
+        end
+
+        rep = subject.send(:value_for, :friends)
+        rep.should be_kind_of Array
+        rep.reject { |r| r.is_a?(EntitySpec::FriendEntity) }.should be_empty
+        rep.first.serializable_hash[:email].should be_nil
+        rep.last.serializable_hash[:email].should be_nil
+
+        rep = subject.send(:value_for, :friends, { user_type: :admin })
+        rep.should be_kind_of Array
+        rep.reject { |r| r.is_a?(EntitySpec::FriendEntity) }.should be_empty
+        rep.first.serializable_hash[:email].should == 'friend1@example.com'
+        rep.last.serializable_hash[:email].should == 'friend2@example.com'
+      end
+
       it 'should call through to the proc if there is one' do
         subject.send(:value_for, :computed, :awesome => 123).should == 123
       end
