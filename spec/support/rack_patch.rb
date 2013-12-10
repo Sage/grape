@@ -1,4 +1,3 @@
-unless Rack::Test::Session.method_defined?(:patch)
   module Rack
     module Test
       module Methods
@@ -20,6 +19,3 @@ unless Rack::Test::Session.method_defined?(:patch)
       end
     end
   end
-else
-  raise LoadError, "Remove spec/support/rack_patch.rb | rack-test #{Rack::Test::VERSION} has a method patch"
-end
